@@ -65,7 +65,9 @@ class HomeController extends Controller
     public function store(Request $request)
     {
         $todayDate = Carbon::now();
-        if ($request->progress == 100) {
+        $pre = (((int)$request->realisasi / (int)$request->target)) * 100;
+        $pro = round($pre, 0);
+        if ($pro == 100) {
             $val = 'Selesai';
             $selesai = $todayDate;
         } else {
@@ -78,7 +80,9 @@ class HomeController extends Controller
                 'user_id' => $request->user_id,
                 'title' => $request->title,
                 'content' => $request->content,
-                'progress' => $request->progress,
+                'kpi' => $request->kpi,
+                'realisasi' => $request->realisasi,
+                'target' => $request->target,
                 'status' => $val,
                 'target_selesai' => $request->target_selesai,
                 'user_id' => $request->user_id,

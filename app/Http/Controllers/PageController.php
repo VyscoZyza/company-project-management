@@ -37,9 +37,21 @@ class PageController extends Controller
                 })->addColumn('target_selesai', function ($row) {
                     $date = date("d M Y", strtotime($row->target_selesai));
                     return $date;
+                })->addColumn('kpi', function ($row) {
+                    if ($row->kpi == "0") {
+                        $kpi = "Tidak";
+                        return $kpi;
+                    } else {
+                        $kpi = "Ya";
+                        return $kpi;
+                    }
+
+                    $date = date("d M Y", strtotime($row->target_selesai));
+                    return $date;
                 })
                 ->addColumn('progress', function ($row) {
-                    $pro = $row->progress;
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
                     $stat = $row->status;
                     // $this->progressBar($row->progress, $row->status);
 
@@ -65,7 +77,8 @@ class PageController extends Controller
                         }
                     }
                 })->addColumn('status', function ($row) {
-                    $pro = $row->progress;
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
                     $stat = $row->status;
                     // $this->statusBar($row->progress, $row->status);
                     if ($stat == "Dibatalkan") {
@@ -108,6 +121,8 @@ class PageController extends Controller
             ->where('bagian', Auth::user()->bagian)
             ->select('user_id', 'name', DB::raw('count(user_id) as total'))
             ->selectRaw('SUM(status = "Selesai") as selesai')
+            ->selectRaw('SUM(kpi = "0") as non')
+            ->selectRaw('SUM(kpi = "1") as kpi')
             ->selectRaw('count(user_id) - SUM(status = "Selesai") as belum')
             ->groupBy('name')
             ->groupBy('user_id')->get();
@@ -164,20 +179,20 @@ class PageController extends Controller
     }
     public function DetailUser(Request $request)
     {
-        $request();
+        // $id = $request()->all;
         // $data = Post::where('user_id', $id)->latest()->get();
-        return view('detail', compact('request'));
+        return view('detail');
     }
     public function UserTask(Request $request)
     {
-        $req = "CEK";
-        print_r($req);
-        exit();
-        $id = $request()->user_id;
+        // $req = "CEK";
+        // print_r($req);
+        // exit();
+        // $id = $request()->user_id;
 
         if ($request->ajax()) {
 
-            $data = Post::where('user_id', $id)->latest()->get();
+            $data = Post::where('user_id', 1000000004)->latest()->get();
             // $data = Post::where('user_id', 1000000002)->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -190,9 +205,21 @@ class PageController extends Controller
                 })->addColumn('target_selesai', function ($row) {
                     $date = date("d M Y", strtotime($row->target_selesai));
                     return $date;
+                })->addColumn('kpi', function ($row) {
+                    if ($row->kpi == "0") {
+                        $kpi = "Tidak";
+                        return $kpi;
+                    } else {
+                        $kpi = "Ya";
+                        return $kpi;
+                    }
+
+                    $date = date("d M Y", strtotime($row->target_selesai));
+                    return $date;
                 })
                 ->addColumn('progress', function ($row) {
-                    $pro = $row->progress;
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
                     $stat = $row->status;
                     // $this->progressBar($row->progress, $row->status);
 
@@ -218,7 +245,8 @@ class PageController extends Controller
                         }
                     }
                 })->addColumn('status', function ($row) {
-                    $pro = $row->progress;
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
                     $stat = $row->status;
                     // $this->statusBar($row->progress, $row->status);
                     if ($stat == "Dibatalkan") {
@@ -247,9 +275,8 @@ class PageController extends Controller
                 })
                 ->rawColumns(['action', 'progress', 'status'])
                 ->make(true);
-
-            return view('detail');
         }
+        return view('detail');
     }
     public function Team(Request $request)
     {
@@ -258,60 +285,82 @@ class PageController extends Controller
         }
 
         if ($request->ajax()) {
-            $data = Post::where('user_id', '!=', Auth::user()->id)->where('supervisi', Auth::user()->supervisi)->where('jabatan', Auth::user()->jabatan)->latest()->get();
+            $data = Post::where('jabatan', Auth::user()->jabatan)->where('supervisi', Auth::user()->supervisi)->where('user_id', '!=', Auth::user()->uid)->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-
-                    $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                    $id = $row->id;
+                    // $this->actionButton($row->id);
+                    $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                     return $btn;
                 })->addColumn('target_selesai', function ($row) {
                     $date = date("d M Y", strtotime($row->target_selesai));
                     return $date;
-                })->addColumn('progress', function ($row) {
-                    $pro = $row->progress;
-                    if ($row->status == "Dibatalkan") {
-                        $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                })->addColumn('kpi', function ($row) {
+                    if ($row->kpi == "0") {
+                        $kpi = "Tidak";
+                        return $kpi;
+                    } else {
+                        $kpi = "Ya";
+                        return $kpi;
+                    }
+
+                    $date = date("d M Y", strtotime($row->target_selesai));
+                    return $date;
+                })
+                ->addColumn('progress', function ($row) {
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
+                    $stat = $row->status;
+                    // $this->progressBar($row->progress, $row->status);
+
+                    if ($stat == "Dibatalkan") {
+                        $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                         return $bar;
                     } else {
                         if ($pro >= 0 and $pro <= 25) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 25 and $pro <= 50) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 50 and $pro <= 75) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 75 and $pro < 100) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro == 100) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         }
                     }
                 })->addColumn('status', function ($row) {
-                    $pro = $row->progress;
-                    if ($row->status == "Dibatalkan") {
-                        $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
+                    $stat = $row->status;
+                    // $this->statusBar($row->progress, $row->status);
+                    if ($stat == "Dibatalkan") {
+                        $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                         return $stat;
                     } else {
-                        if ($pro >= 0 and $pro <= 25) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        if (
+                            $pro >= 0 and $pro <= 25
+                        ) {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 25 and $pro <= 50) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                            $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 50 and $pro <= 75) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 75 and $pro < 100) {
-                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                             return $stat;
                         } else if ($pro == 100) {
-                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                             return $stat;
                         }
                     }
@@ -339,56 +388,81 @@ class PageController extends Controller
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
+                        $id = $row->id;
+                        // $this->actionButton($row->id);
+                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
+                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
 
-                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
                         $date = date("d M Y", strtotime($row->target_selesai));
                         return $date;
-                    })->addColumn('progress', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                    })->addColumn('kpi', function ($row) {
+                        if ($row->kpi == "0") {
+                            $kpi = "Tidak";
+                            return $kpi;
+                        } else {
+                            $kpi = "Ya";
+                            return $kpi;
+                        }
+
+                        $date = date("d M Y", strtotime($row->target_selesai));
+                        return $date;
+                    })
+                    ->addColumn('progress', function ($row) {
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->progressBar($row->progress, $row->status);
+
+                        if ($stat == "Dibatalkan") {
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else {
                             if ($pro >= 0 and $pro <= 25) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 75 and $pro < 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro == 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             }
                         }
                     })->addColumn('status', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->statusBar($row->progress, $row->status);
+                        if ($stat == "Dibatalkan") {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else {
-                            if ($pro >= 0 and $pro <= 25) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                            if (
+                                $pro >= 0 and $pro <= 25
+                            ) {
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 75 and $pro < 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             } else if ($pro == 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             }
                         }
@@ -405,56 +479,81 @@ class PageController extends Controller
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
+                        $id = $row->id;
+                        // $this->actionButton($row->id);
+                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
+                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
 
-                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
                         $date = date("d M Y", strtotime($row->target_selesai));
                         return $date;
-                    })->addColumn('progress', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                    })->addColumn('kpi', function ($row) {
+                        if ($row->kpi == "0") {
+                            $kpi = "Tidak";
+                            return $kpi;
+                        } else {
+                            $kpi = "Ya";
+                            return $kpi;
+                        }
+
+                        $date = date("d M Y", strtotime($row->target_selesai));
+                        return $date;
+                    })
+                    ->addColumn('progress', function ($row) {
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->progressBar($row->progress, $row->status);
+
+                        if ($stat == "Dibatalkan") {
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else {
                             if ($pro >= 0 and $pro <= 25) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 75 and $pro < 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro == 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             }
                         }
                     })->addColumn('status', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->statusBar($row->progress, $row->status);
+                        if ($stat == "Dibatalkan") {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else {
-                            if ($pro >= 0 and $pro <= 25) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                            if (
+                                $pro >= 0 and $pro <= 25
+                            ) {
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 75 and $pro < 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             } else if ($pro == 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             }
                         }
@@ -482,56 +581,81 @@ class PageController extends Controller
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
+                        $id = $row->id;
+                        // $this->actionButton($row->id);
+                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
+                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
 
-                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
                         $date = date("d M Y", strtotime($row->target_selesai));
                         return $date;
-                    })->addColumn('progress', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                    })->addColumn('kpi', function ($row) {
+                        if ($row->kpi == "0") {
+                            $kpi = "Tidak";
+                            return $kpi;
+                        } else {
+                            $kpi = "Ya";
+                            return $kpi;
+                        }
+
+                        $date = date("d M Y", strtotime($row->target_selesai));
+                        return $date;
+                    })
+                    ->addColumn('progress', function ($row) {
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->progressBar($row->progress, $row->status);
+
+                        if ($stat == "Dibatalkan") {
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else {
                             if ($pro >= 0 and $pro <= 25) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 75 and $pro < 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro == 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             }
                         }
                     })->addColumn('status', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->statusBar($row->progress, $row->status);
+                        if ($stat == "Dibatalkan") {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else {
-                            if ($pro >= 0 and $pro <= 25) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                            if (
+                                $pro >= 0 and $pro <= 25
+                            ) {
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 75 and $pro < 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             } else if ($pro == 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             }
                         }
@@ -547,56 +671,81 @@ class PageController extends Controller
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
+                        $id = $row->id;
+                        // $this->actionButton($row->id);
+                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
+                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
 
-                        $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
                         $date = date("d M Y", strtotime($row->target_selesai));
                         return $date;
-                    })->addColumn('progress', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                    })->addColumn('kpi', function ($row) {
+                        if ($row->kpi == "0") {
+                            $kpi = "Tidak";
+                            return $kpi;
+                        } else {
+                            $kpi = "Ya";
+                            return $kpi;
+                        }
+
+                        $date = date("d M Y", strtotime($row->target_selesai));
+                        return $date;
+                    })
+                    ->addColumn('progress', function ($row) {
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->progressBar($row->progress, $row->status);
+
+                        if ($stat == "Dibatalkan") {
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else {
                             if ($pro >= 0 and $pro <= 25) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro > 75 and $pro < 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             } else if ($pro == 100) {
-                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                                $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                                 return $bar;
                             }
                         }
                     })->addColumn('status', function ($row) {
-                        $pro = $row->progress;
-                        if ($row->status == "Dibatalkan") {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                        $pro = round($pre, 0);
+                        $stat = $row->status;
+                        // $this->statusBar($row->progress, $row->status);
+                        if ($stat == "Dibatalkan") {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else {
-                            if ($pro >= 0 and $pro <= 25) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                            if (
+                                $pro >= 0 and $pro <= 25
+                            ) {
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 25 and $pro <= 50) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 50 and $pro <= 75) {
-                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                                $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                                 return $stat;
                             } else if ($pro > 75 and $pro < 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             } else if ($pro == 100) {
-                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                                $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                                 return $stat;
                             }
                         }
@@ -623,56 +772,81 @@ class PageController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
+                    $id = $row->id;
+                    // $this->actionButton($row->id);
+                    $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
+                    $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
+                    $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
 
-                    $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
 
                     return $btn;
                 })->addColumn('target_selesai', function ($row) {
                     $date = date("d M Y", strtotime($row->target_selesai));
                     return $date;
-                })->addColumn('progress', function ($row) {
-                    $pro = $row->progress;
-                    if ($row->status == "Dibatalkan") {
-                        $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                })->addColumn('kpi', function ($row) {
+                    if ($row->kpi == "0") {
+                        $kpi = "Tidak";
+                        return $kpi;
+                    } else {
+                        $kpi = "Ya";
+                        return $kpi;
+                    }
+
+                    $date = date("d M Y", strtotime($row->target_selesai));
+                    return $date;
+                })
+                ->addColumn('progress', function ($row) {
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
+                    $stat = $row->status;
+                    // $this->progressBar($row->progress, $row->status);
+
+                    if ($stat == "Dibatalkan") {
+                        $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-dark" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                         return $bar;
                     } else {
                         if ($pro >= 0 and $pro <= 25) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-danger" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 25 and $pro <= 50) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $row->progress . '%; background-color: #f05716;" aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar"  role="progressbar" style="width: ' . $pro . '%; background-color: #f05716;" aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 50 and $pro <= 75) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-warning" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro > 75 and $pro < 100) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-success" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         } else if ($pro == 100) {
-                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $row->progress . '%; " aria-valuenow="' . $row->progress . '" aria-valuemin="0" aria-valuemax="100">' . $row->progress . ' %</div></div>';
+                            $bar = '<div class="progress mt-1" style="height: 20px; background-color: #c7c8d1;";> <div class="progress-bar bg-primary" role="progressbar" style="width: ' . $pro . '%; " aria-valuenow="' . $pro . '" aria-valuemin="0" aria-valuemax="100">' . $pro . ' %</div></div>';
                             return $bar;
                         }
                     }
                 })->addColumn('status', function ($row) {
-                    $pro = $row->progress;
-                    if ($row->status == "Dibatalkan") {
-                        $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                    $pre = (((int)$row->realisasi / (int)$row->target)) * 100;
+                    $pro = round($pre, 0);
+                    $stat = $row->status;
+                    // $this->statusBar($row->progress, $row->status);
+                    if ($stat == "Dibatalkan") {
+                        $stat = '<div class="d-flex flex-column"> <a class="btn btn-dark mr-1 btn-sm text-white">' . $stat . '</a></div>';
                         return $stat;
                     } else {
-                        if ($pro >= 0 and $pro <= 25) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $row->status . '</a></div>';
+                        if (
+                            $pro >= 0 and $pro <= 25
+                        ) {
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-danger mr-1 btn-sm text-white">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 25 and $pro <= 50) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $row->status . '</a></div>';
+                            $stat = '<div class="d-flex flex-column"> <a class="btn mr-1 btn-sm text-white" style="background-color: #f05716;">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 50 and $pro <= 75) {
-                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $row->status . '</a></div>';
+                            $stat = '<div class="d-flex flex-column"> <a class="btn btn-warning mr-1 btn-sm text-white ">' . $stat . '</a></div>';
                             return $stat;
                         } else if ($pro > 75 and $pro < 100) {
-                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-success mr-1 btn-sm text-white">' . $stat . '</div></div>';
                             return $stat;
                         } else if ($pro == 100) {
-                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $row->status . '</div></div>';
+                            $stat = '<div class="d-flex flex-column"> <div class="btn btn-primary mr-1 btn-sm text-white">' . $stat . '</div></div>';
                             return $stat;
                         }
                     }

@@ -10,6 +10,6 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'title', 'content', 'target_selesai', 'name', 'jabatan', 'supervisi', 'bagian', 'bidang', 'progress', 'status', 'tanggal_selesai'
+        'user_id', 'title', 'content', 'target_selesai', 'name', 'jabatan', 'supervisi', 'bagian', 'bidang',  'status', 'tanggal_selesai', 'realisasi', 'target', 'kpi'
     ];
 }

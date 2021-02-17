@@ -61,10 +61,12 @@
             <tr>
                 <th scope="col " style="width: 1%" class="text-center">No</th>
                 <th scope="col" style="width: 30%">Nama</th>
-                <th scope="col" class="text-center" style="width: 5%">User ID</th>
+                <th scope="col" class="text-center" style="width: 10%">Personal Number</th>
                 <th scope="col" class="text-center" style="width: 5%">Total</th>
                 <th scope="col" class="text-center" style="width: 5%">Selesai</th>
-                <th scope="col" class="text-center" style="width: 5%">Belum Selesai</th>
+                <th scope="col" class="text-center" style="width: 9%">Belum Selesai</th>
+                <th scope="col" class="text-center" style="width: 5%">KPI</th>
+                <th scope="col" class="text-center" style="width: 7%">Non-KPI</th>
                 <th scope="col" class="text-center" style="width:1%">Action</th>
             </tr>
         </thead>
@@ -91,7 +93,7 @@
             responsive: true,
 
             columnDefs: [{
-                    "targets": [0, 2, 3, 4, 5, 6], // your case first column
+                    "targets": [0, 2, 3, 4, 5, 6, 7, 8], // your case first column
                     "className": "text-center",
                 },
 
@@ -127,16 +129,17 @@
                 {
                     data: 'name',
                     name: 'name',
-                    orderable: false,
+
                 },
                 {
                     data: 'user_id',
                     name: 'user_id',
-                    orderable: false,
+
                 },
+
                 {
-                    data: 'total',
-                    name: 'total',
+                    data: 'non',
+                    name: 'non',
 
                 },
                 {
@@ -147,7 +150,17 @@
                 {
                     data: 'belum',
                     name: 'belum',
-                    orderable: false,
+
+                },
+                {
+                    data: 'total',
+                    name: 'total',
+
+                },
+                {
+                    data: 'kpi',
+                    name: 'kpi',
+
                 },
                 {
                     data: 'action',

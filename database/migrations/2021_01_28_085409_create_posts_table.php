@@ -15,16 +15,18 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title', 100);
             $table->text('content');
-            $table->int('user_id', 10);
+            $table->string('user_id', 10);
             $table->string('name', 100);
             $table->string('jabatan', 100);
             $table->string('supervisi', 100);
             $table->string('bagian', 100);
             $table->string('bidang', 100);
-            $table->int('progress', 3);
+            $table->string('target', 3);
+            $table->string('realisasi', 3);
             $table->string('status', 25);
+            $table->string('kpi', 2);
             $table->date('target_selesai');
             $table->timestamp('tanggal_selesai');
             $table->timestamps();
