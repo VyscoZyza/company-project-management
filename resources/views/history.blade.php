@@ -46,7 +46,7 @@
                         <div class="timeline-item">
 
                             <span class="time"><i class="fas fa-clock"></i>&nbsp{{ date("d M Y", strtotime($post->tanggal_selesai)) }}</span>
-                            <h3 class="timeline-header"><a>{{ $post->name }}</a>&nbsp{{ $post->title }}</h3>
+                            <h3 class="timeline-header"><a>{{ $post->name }}</a>&nbsp &nbsp{{ $post->title }}</h3>
 
                             <div class="timeline-body ">
                                 {{ $post->content }}
@@ -75,120 +75,5 @@
 
 </section>
 <!-- /.content -->
-<script type="text/javascript">
-    $(function() {
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        var table = $('.data-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('home.index') }}",
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'title',
-                    name: 'title'
-                },
-                {
-                    data: 'content',
-                    name: 'content'
-                },
-                {
-                    data: 'progress',
-                    name: 'progress'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'target_selesai',
-                    name: 'target_selesai'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
-
-        $('#createNewProduct').click(function() {
-            $('#saveBtn').val("create-product");
-            $('#id').val('');
-            $('#productForm').trigger("reset");
-            $('#modelHeading').html("Create New Product");
-            $('#ajaxModel').modal('show');
-        });
-
-        $('body').on('click', '.editProduct', function() {
-            var id = $(this).data('id');
-            $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
-                $('#modelHeading').html("Edit Task");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal('show');
-                $('#id').val(data.id);
-                $('#title').val(data.title);
-                $('#content').val(data.content);
-                $('#progress').val(data.progress);
-                if (+data.progress === 100) {
-                    $('#status').val("Done");
-                } else {
-                    $('#status').val(data.status);
-                }
-
-                $('#target_selesai').val(data.target_selesai);
-            })
-        });
-
-        $('#saveBtn').click(function(e) {
-            e.preventDefault();
-            $(this).html('Sending..');
-
-            $.ajax({
-                data: $('#productForm').serialize(),
-                url: "{{ route('home.store') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function(data) {
-                    $('#productForm').trigger("reset");
-                    $('#ajaxModel').modal('hide');
-                    table.draw();
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                    $('#saveBtn').html('Save Changes');
-                }
-            });
-        });
-
-        $('body').on('click', '.deleteProduct', function() {
-            var id = $(this).data("id");
-            var result = confirm("Are You sure want to delete !");
-            if (result) {
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ route('home.store') }}" + '/' + id,
-                    success: function(data) {
-                        table.draw();
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
-                    }
-                });
-            } else {
-                return false;
-            }
-        });
-    });
-</script>
 
 @endsection

@@ -299,14 +299,7 @@
 
                                 </p>
                             </a>
-                            @elseif(Auth::user()->level == 01)
-                            <a href="{{ route('kabag') }}" class="nav-link">
-                                <i class="nav-icon fas fa-user"></i>
-                                <p class="text-white">
-                                    Lihat Kabag
 
-                                </p>
-                            </a>
                             @endif
                         </li>
                         <li class="nav-item font-sidebar">

@@ -137,11 +137,7 @@
 
                 },
 
-                {
-                    data: 'non',
-                    name: 'non',
 
-                },
                 {
                     data: 'selesai',
                     name: 'selesai',
@@ -160,6 +156,11 @@
                 {
                     data: 'kpi',
                     name: 'kpi',
+
+                },
+                {
+                    data: 'non',
+                    name: 'non',
 
                 },
                 {

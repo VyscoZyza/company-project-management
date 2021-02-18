@@ -391,9 +391,6 @@ class PageController extends Controller
                         $id = $row->id;
                         // $this->actionButton($row->id);
                         $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
-                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
-                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
-
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
@@ -482,9 +479,6 @@ class PageController extends Controller
                         $id = $row->id;
                         // $this->actionButton($row->id);
                         $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
-                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
-                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
-
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
@@ -577,16 +571,13 @@ class PageController extends Controller
         if (Auth::user()->jabatan == 'Supervisor') {
             if ($request->ajax()) {
 
-                $data = Post::where('user_id', '!=', Auth::user()->id)->where('bagian', Auth::user()->bagian)->where('jabatan', Auth::user()->jabatan)->latest()->get();
+                $data = Post::where('user_id', '!=', Auth::user()->uid)->where('bagian', Auth::user()->bagian)->where('jabatan', Auth::user()->jabatan)->latest()->get();
                 return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function ($row) {
                         $id = $row->id;
                         // $this->actionButton($row->id);
                         $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
-                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
-                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
-
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
@@ -674,9 +665,6 @@ class PageController extends Controller
                         $id = $row->id;
                         // $this->actionButton($row->id);
                         $btn = ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Detail" class="btn btn-success mr-1 btn-sm detailProduct"><span class="fas fa-info"></span></a>';
-                        $btn  = $btn .  '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Edit"  class=" edit btn btn-primary btn-sm editProduct"><span class="fas fa-pen"></span></a>';
-                        $btn = $btn . ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteProduct"><span class="fas fa-trash"></span></a>';
-
 
                         return $btn;
                     })->addColumn('target_selesai', function ($row) {
@@ -858,8 +846,13 @@ class PageController extends Controller
     }
     public function History()
     {
-        // $posts = Post::where('user_id', '!=', Auth::user()->id)->where('bagian', Auth::user()->bagian)->where('jabatan', Auth::user()->jabatan)->latest()->paginate(5);
-        $posts = Post::where('bagian', Auth::user()->bagian)->where('status', 'Selesai')->orderBy('tanggal_selesai', 'desc')->get();
+        if (Auth::user()->level == '01') {
+            // $posts = Post::where('user_id', '!=', Auth::user()->id)->where('bagian', Auth::user()->bagian)->where('jabatan', Auth::user()->jabatan)->latest()->paginate(5);
+            $posts = Post::where('status', 'Selesai')->orderBy('tanggal_selesai', 'desc')->get();
+        } else {
+            $posts = Post::where('bagian', Auth::user()->bagian)->where('status', 'Selesai')->orderBy('tanggal_selesai', 'desc')->get();
+        }
+
         return view('history', compact('posts'));
     }
     public function List(Request $request)

@@ -68,7 +68,7 @@
                 <th scope="col " class="text-center  justify-content-center">Progress</th>
                 <th scope="col" style="width: 11%" class="text-center">Status</th>
                 <th scope="col" style="width: 5%" class="text-center">KPI</th>
-                <th scope="col" style="width: 9%" class="text-center">Target</th>
+                <th scope="col" style="width: 9%" class="text-center">SLA</th>
                 <th scope="col" style="width: 5%" class="text-center">Action</t>
             </tr>
         </thead>

@@ -60,319 +60,336 @@
 
 
 </div>
-<div class="col-md-12">
-    <table class="table table-hover data-table">
-        <thead class="table-white">
-            <tr>
-                <th scope="col " style="width: 1%" class="text-center">No</th>
-                <th scope="col" style="width: 20%">Judul</th>
-                <th scope="col" class="text-center" style="display:none">Deskripsi</th>
-                <th scope="col " class="text-center  justify-content-center">Progress</th>
-                <th scope="col" style="width: 11%" class="text-center">Status</th>
-                <th scope="col" style="width: 6%" class="text-center">KPI</th>
-                <th scope="col" style="width: 9%" class="text-center">Target</th>
-                <th scope="col" style="width: 9%" class="text-center">Action</t>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</div>
-
-
-<div class="modal fade" id="ajaxModel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="modelHeading"></h4>
-            </div>
-            <div class="modal-body">
-                <form id="productForm" name="productForm" class="form-horizontal">
-                    <input type="hidden" name="id" id="id">
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">Judul</label>
-                        <div class="col-sm-12">
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Judul" value="" maxlength="50" required="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Deskripsi</label>
-                        <div class="col-sm-12">
-                            <textarea id="content" name="content" required="" placeholder="Deskripsi" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">KPI</label>
-                        <div class="col-sm-12">
-                            <div class="btn-group dropright">
-                                <select class="form-control" id="kpi" name="kpi">
-                                    <option value="1">Ya</option>
-                                    <option value="0">Tidak</option>
-
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Realisasi</label>
-                        <div class="col-sm-12">
-                            <input type="range" name="realisasi" class="form-range" style="width: 85%" id="realisasi" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
-                            <output id="progressVal" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
-
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Target</label>
-                        <div class="col-sm-12">
-                            <input type="range" name="target" class="form-range" style="width: 85%" id="target" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
-                            <output id="progressVal2" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
-
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Status</label>
-                        <div class="col-sm-12">
-                            <div class="btn-group dropright">
-                                <select class="form-control" id="status" name="status">
-                                    <option value="Direncanakan">Direncanakan</option>
-                                    <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
-                                    <option value="Ditunda">Ditunda</option>
-                                    <option value="Terkendala">Terkendala</option>
-                                    <option value="Dibatalkan">Dibatalkan</option>
-
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-12 control-label">SLA</label>
-                        <div class="col-sm-12">
-                            <div class="input-group date" data-target-input="nearest">
-                                <input name="target_selesai" id="target_selesai" type="date">
-
-                            </div>
-                        </div>
-                        <input type="hidden" id="user_id" name="user_id" value=" {{ Auth::user()->uid }}">
-                        <input type="hidden" id="name" name="name" value=" {{ Auth::user()->name }}">
-                        <input type="hidden" id="jabatan" name="jabatan" value=" {{ Auth::user()->jabatan }}">
-                        <input type="hidden" id="supervisi" name="supervisi" value=" {{ Auth::user()->supervisi }}">
-                        <input type="hidden" id="bagian" name="bagian" value=" {{ Auth::user()->bagian }}">
-                        <input type="hidden" id="bidang" name="bidang" value=" {{ Auth::user()->bidang }}">
-                        <input type="hidden" id="tanggal_selesai" name="tanggal_selesai" value="">
-                        <br>
-
-                        <div class="col text-center">
-                            <button type="submit" class="btn blue center" id="saveBtn" value="create">Simpan</button>
-                        </div>
-
-                </form>
+<div class="row" style="margin-top: 50px;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Tampilkan</label>
+                    <select class="form-control fkpi" id="kpi" name="kpi">
+                        <option value="">Semua</option>
+                        <option value="Ya">KPI</option>
+                        <option value="Tidak">Non-KPI</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="col-md-12">
+        <table class="table table-hover data-table">
+            <thead class="table-white">
+                <tr>
+                    <th scope="col " style="width: 1%" class="text-center">No</th>
+                    <th scope="col" style="width: 20%">Judul</th>
+                    <th scope="col" class="text-center" style="display:none">Deskripsi</th>
+                    <th scope="col " class="text-center  justify-content-center">Progress</th>
+                    <th scope="col" style="width: 11%" class="text-center">Status</th>
+                    <th scope="col" style="width: 6%" class="text-center">KPI</th>
+                    <th scope="col" style="width: 9%" class="text-center">SLA</th>
+                    <th scope="col" style="width: 9%" class="text-center">Action</t>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
-<script type="text/javascript">
-    $(function() {
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    <div class="modal fade" id="ajaxModel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelHeading"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm" name="productForm" class="form-horizontal">
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Judul</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Judul" value="" maxlength="50" required="">
+                            </div>
+                        </div>
 
-        var table = $('.data-table').DataTable({
-            paging: true,
-            info: true,
-            autoWidth: false,
-            responsive: true,
-            // "paging": true,
-            // "lengthChange": false,
-            // "searching": false,
-            // "ordering": true,
-            // "info": true,
-            // "autoWidth": false,
-            // "responsive": true,
-            columnDefs: [{
-                    "targets": [0, 2, 3, 4, 5, 6],
-                    "className": "text-center",
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Deskripsi</label>
+                            <div class="col-sm-12">
+                                <textarea id="content" name="content" required="" placeholder="Deskripsi" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">KPI</label>
+                            <div class="col-sm-12">
+                                <div class="btn-group dropright">
+                                    <select class="form-control" id="kpi" name="kpi">
+                                        <option value="1">Ya</option>
+                                        <option value="0">Tidak</option>
 
-                },
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Realisasi</label>
+                            <div class="col-sm-12">
+                                <input type="range" name="realisasi" class="form-range" style="width: 85%" id="realisasi" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
+                                <output id="progressVal" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
 
-            ],
-            language: {
-                paginate: {
-                    next: '<span class="fas fa-arrow-right"></span>', // or '→'
-                    previous: '<span class="fas fa-arrow-left"></span>' // or '←' 
-                }
-            },
-            oLanguage: {
-                "oPaginate": {
-                    next: '&#8594;', // or '→'
-                    previous: '&#8592;' // or '←' 
-                },
-                "sLengthMenu": "Tampilkan _MENU_ Item",
-                "sEmptyTable": "Tidak ada data",
-                "sInfoEmpty": "Tidak ditemukan",
-                "sLoadingRecords": "Sedang memproses - loading...",
-                "sInfo": "Menampilkan _START_ - _END_ dari _TOTAL_ Item",
-                "sSearch": "Cari:",
-            },
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('my.task') }}",
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Target</label>
+                            <div class="col-sm-12">
+                                <input type="range" name="target" class="form-range" style="width: 85%" id="target" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
+                                <output id="progressVal2" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
 
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false,
-                },
-                {
-                    data: 'title',
-                    name: 'title',
-                    orderable: false,
-                },
-                {
-                    data: 'content',
-                    name: 'content',
-                    orderable: false,
-                    visible: false,
-                },
-                {
-                    data: 'progress',
-                    name: 'progress'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'kpi',
-                    name: 'kpi'
-                },
-                {
-                    data: 'target_selesai',
-                    name: 'target_selesai'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-        });
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Status</label>
+                            <div class="col-sm-12">
+                                <div class="btn-group dropright">
+                                    <select class="form-control" id="status" name="status">
+                                        <option value="Direncanakan">Direncanakan</option>
+                                        <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
+                                        <option value="Ditunda">Ditunda</option>
+                                        <option value="Terkendala">Terkendala</option>
+                                        <option value="Dibatalkan">Dibatalkan</option>
 
-        $('#createNewProduct').click(function() {
-            document.getElementById('title').readOnly = false;
-            document.getElementById('content').readOnly = false;
-            document.getElementById('target').disabled = false;
-            document.getElementById('realisasi').disabled = false;
-            document.getElementById('status').disabled = false;
-            document.getElementById('target_selesai').readOnly = false;
-            document.getElementById('saveBtn').style.visibility = 'visible';
-            $('#saveBtn').val("create-product");
-            $('#id').val('');
-            $('#productForm').trigger("reset");
-            $('#modelHeading').html("Buat Task Baru");
-            $('#ajaxModel').modal('show');
-        });
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-12 control-label">SLA</label>
+                            <div class="col-sm-12">
+                                <div class="input-group date" data-target-input="nearest">
+                                    <input name="target_selesai" id="target_selesai" type="date">
 
-        $('body').on('click', '.editProduct', function() {
-            document.getElementById('title').readOnly = false;
-            document.getElementById('content').readOnly = false;
-            document.getElementById('target').disabled = false;
-            document.getElementById('realisasi').disabled = false;
-            document.getElementById('status').disabled = false;
-            document.getElementById('target_selesai').readOnly = false;
-            document.getElementById('saveBtn').style.visibility = 'visible';
-            var id = $(this).data('id');
-            $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
-                $('#modelHeading').html("Edit Task");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal('show');
-                $('#id').val(data.id);
-                $('#title').val(data.title);
-                $('#content').val(data.content);
-                $('#kpi').val(data.kpi);
-                $('#realisasi').val(data.realisasi);
-                $('#target').val(data.target);
-                $('#progressVal').val(data.realisasi);
-                $('#progressVal2').val(data.target);
-                $('#status').val(data.status);
-                $('#target_selesai').val(data.target_selesai);
-            })
-        });
+                                </div>
+                            </div>
+                            <input type="hidden" id="user_id" name="user_id" value=" {{ Auth::user()->uid }}">
+                            <input type="hidden" id="name" name="name" value=" {{ Auth::user()->name }}">
+                            <input type="hidden" id="jabatan" name="jabatan" value=" {{ Auth::user()->jabatan }}">
+                            <input type="hidden" id="supervisi" name="supervisi" value=" {{ Auth::user()->supervisi }}">
+                            <input type="hidden" id="bagian" name="bagian" value=" {{ Auth::user()->bagian }}">
+                            <input type="hidden" id="bidang" name="bidang" value=" {{ Auth::user()->bidang }}">
+                            <input type="hidden" id="tanggal_selesai" name="tanggal_selesai" value="">
+                            <br>
 
-        $('body').on('click', '.detailProduct', function() {
-            document.getElementById('title').readOnly = true;
-            document.getElementById('content').readOnly = true;
-            document.getElementById('target').disabled = true;
-            document.getElementById('realisasi').disabled = true;
-            document.getElementById('status').disabled = true;
-            document.getElementById('target_selesai').readOnly = true;
-            document.getElementById('saveBtn').style.visibility = 'hidden';
-            var id = $(this).data('id');
-            $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
-                $('#modelHeading').html("Edit Task");
-                $('#saveBtn').val("edit-user");
-                $('#ajaxModel').modal('show');
-                $('#id').val(data.id);
-                $('#title').val(data.title);
-                $('#content').val(data.content);
-                $('#kpi').val(data.kpi);
-                $('#realisasi').val(data.realisasi);
-                $('#target').val(data.target);
-                $('#progressVal').val(data.realisasi);
-                $('#progressVal2').val(data.target);
-                $('#status').val(data.status);
-                $('#target_selesai').val(data.target_selesai);
-            })
-        });
+                            <div class="col text-center">
+                                <button type="submit" class="btn blue center" id="saveBtn" value="create">Simpan</button>
+                            </div>
 
-        $('#saveBtn').click(function(e) {
-            e.preventDefault();
-            $(this).html('Mengirim..');
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            $.ajax({
-                data: $('#productForm').serialize(),
-                url: "{{ route('home.store') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function(data) {
-                    $('#productForm').trigger("reset");
-                    $('#ajaxModel').modal('hide');
-                    table.draw();
-                },
-                error: function(data) {
-                    console.log('Error:', data);
-                    $('#saveBtn').html('Simpan');
+    <script type="text/javascript">
+        $(function() {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-        });
 
-        $('body').on('click', '.deleteProduct', function() {
-            var id = $(this).data("id");
-            var result = confirm("Yakin menghapus?");
-            if (result) {
+            var table = $('.data-table').DataTable({
+                paging: true,
+                info: true,
+                autoWidth: false,
+                responsive: true,
+                // "paging": true,
+                // "lengthChange": false,
+                // "searching": false,
+                // "ordering": true,
+                // "info": true,
+                // "autoWidth": false,
+                // "responsive": true,
+                columnDefs: [{
+                        "targets": [0, 2, 3, 4, 5, 6],
+                        "className": "text-center",
+                    },
+
+                ],
+                language: {
+                    paginate: {
+                        next: '<span class="fas fa-arrow-right"></span>', // or '→'
+                        previous: '<span class="fas fa-arrow-left"></span>' // or '←' 
+                    }
+                },
+                oLanguage: {
+                    "oPaginate": {
+                        next: '&#8594;', // or '→'
+                        previous: '&#8592;' // or '←' 
+                    },
+                    "sLengthMenu": "Tampilkan _MENU_ Item",
+                    "sEmptyTable": "Tidak ada data",
+                    "sInfoEmpty": "Tidak ditemukan",
+                    "sLoadingRecords": "Sedang memproses - loading...",
+                    "sInfo": "Menampilkan _START_ - _END_ dari _TOTAL_ Item",
+                    "sSearch": "Cari:",
+                },
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('my.task') }}",
+
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'title',
+                        name: 'title',
+                        orderable: false,
+                    },
+                    {
+                        data: 'content',
+                        name: 'content',
+                        orderable: false,
+                        visible: false,
+                    },
+                    {
+                        data: 'progress',
+                        name: 'progress'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'kpi',
+                        name: 'kpi'
+                    },
+                    {
+                        data: 'target_selesai',
+                        name: 'target_selesai'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+
+            $('#createNewProduct').click(function() {
+                document.getElementById('title').readOnly = false;
+                document.getElementById('content').readOnly = false;
+                document.getElementById('target').disabled = false;
+                document.getElementById('realisasi').disabled = false;
+                document.getElementById('status').disabled = false;
+                document.getElementById('target_selesai').readOnly = false;
+                document.getElementById('saveBtn').style.visibility = 'visible';
+                $('#saveBtn').val("create-product");
+                $('#id').val('');
+                $('#productForm').trigger("reset");
+                $('#modelHeading').html("Buat Task Baru");
+                $('#ajaxModel').modal('show');
+            });
+
+            $('body').on('click', '.editProduct', function() {
+                document.getElementById('title').readOnly = false;
+                document.getElementById('content').readOnly = false;
+                document.getElementById('target').disabled = false;
+                document.getElementById('realisasi').disabled = false;
+                document.getElementById('status').disabled = false;
+                document.getElementById('target_selesai').readOnly = false;
+                document.getElementById('saveBtn').style.visibility = 'visible';
+                var id = $(this).data('id');
+                $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
+                    $('#modelHeading').html("Edit Task");
+                    $('#saveBtn').val("edit-user");
+                    $('#ajaxModel').modal('show');
+                    $('#id').val(data.id);
+                    $('#title').val(data.title);
+                    $('#content').val(data.content);
+                    $('#kpi').val(data.kpi);
+                    $('#realisasi').val(data.realisasi);
+                    $('#target').val(data.target);
+                    $('#progressVal').val(data.realisasi);
+                    $('#progressVal2').val(data.target);
+                    $('#status').val(data.status);
+                    $('#target_selesai').val(data.target_selesai);
+                })
+            });
+
+            $('body').on('click', '.detailProduct', function() {
+                document.getElementById('title').readOnly = true;
+                document.getElementById('content').readOnly = true;
+                document.getElementById('target').disabled = true;
+                document.getElementById('realisasi').disabled = true;
+                document.getElementById('status').disabled = true;
+                document.getElementById('target_selesai').readOnly = true;
+                document.getElementById('saveBtn').style.visibility = 'hidden';
+                var id = $(this).data('id');
+                $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
+                    $('#modelHeading').html("Detail Task");
+                    $('#saveBtn').val("edit-user");
+                    $('#ajaxModel').modal('show');
+                    $('#id').val(data.id);
+                    $('#title').val(data.title);
+                    $('#content').val(data.content);
+                    $('#kpi').val(data.kpi);
+                    $('#realisasi').val(data.realisasi);
+                    $('#target').val(data.target);
+                    $('#progressVal').val(data.realisasi);
+                    $('#progressVal2').val(data.target);
+                    $('#status').val(data.status);
+                    $('#target_selesai').val(data.target_selesai);
+                })
+            });
+
+            $('#saveBtn').click(function(e) {
+                e.preventDefault();
+                $(this).html('Mengirim..');
+
                 $.ajax({
-                    type: "DELETE",
-                    url: "{{ route('home.store') }}" + '/' + id,
+                    data: $('#productForm').serialize(),
+                    url: "{{ route('home.store') }}",
+                    type: "POST",
+                    dataType: 'json',
                     success: function(data) {
+                        $('#productForm').trigger("reset");
+                        $('#ajaxModel').modal('hide');
                         table.draw();
                     },
                     error: function(data) {
                         console.log('Error:', data);
+                        $('#saveBtn').html('Simpan');
                     }
                 });
-            } else {
-                return false;
-            }
+            });
+
+            $('body').on('click', '.deleteProduct', function() {
+                var id = $(this).data("id");
+                var result = confirm("Yakin menghapus?");
+                if (result) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ route('home.store') }}" + '/' + id,
+                        success: function(data) {
+                            table.draw();
+                        },
+                        error: function(data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+            $('#kpi').change(function() {
+                table.draw();
+            });
+
         });
-
-    });
-</script>
+    </script>
 
 
-@endsection
+    @endsection

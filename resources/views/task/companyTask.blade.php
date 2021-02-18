@@ -54,7 +54,7 @@
 </style>
 
 
-<h3>Bagian {{Auth::user()->bagian}}</h3>
+<h3>Lihat Bagian</h3>
 <div class="col-md-12">
     <table class="table table-hover data-table">
         <thead class="table-white">
