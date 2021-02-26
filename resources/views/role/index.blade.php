@@ -82,9 +82,32 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input type="range" name="progress" class="form-range" style="width: 80%" id="progress" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
-                        <output id="progressVal" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
-                        <output class="btn  bubble blue" style="color: #fff !important; text-decoration: none;">%</output>
+                        <label class="col-sm-2 control-label">KPI</label>
+                        <div class="col-sm-12">
+                            <div class="btn-group dropright">
+                                <select class="form-control" id="kpi" name="kpi">
+                                    <option value="1">Ya</option>
+                                    <option value="0">Tidak</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Realisasi</label>
+                        <div class="col-sm-12">
+                            <input type="range" name="realisasi" class="form-range" style="width: 85%" id="realisasi" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
+                            <output id="progressVal" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Target</label>
+                        <div class="col-sm-12">
+                            <input type="range" name="target" class="form-range" style="width: 85%" id="target" value="0" min="0" max="100" step="10" oninput="this.nextElementSibling.value = this.value ">
+                            <output id="progressVal2" class="btn blue" style="color: #fff !important; text-decoration: none;">0</output>
+
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Status</label>
@@ -97,28 +120,18 @@
                                     <option value="Terkendala">Terkendala</option>
                                     <option value="Dibatalkan">Dibatalkan</option>
 
-
-
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-12 control-label">Target Selesai</label>
+                        <label class="col-sm-12 control-label">SLA</label>
                         <div class="col-sm-12">
                             <div class="input-group date" data-target-input="nearest">
                                 <input name="target_selesai" id="target_selesai" type="date">
 
                             </div>
                         </div>
-                        <input type="hidden" id="user_id" name="user_id" value=" {{ Auth::user()->id }}">
-                        <input type="hidden" id="name" name="name" value=" {{ Auth::user()->name }}">
-                        <input type="hidden" id="jabatan" name="jabatan" value=" {{ Auth::user()->jabatan }}">
-                        <input type="hidden" id="supervisi" name="supervisi" value=" {{ Auth::user()->supervisi }}">
-                        <input type="hidden" id="bagian" name="bagian" value=" {{ Auth::user()->bagian }}">
-                        <input type="hidden" id="bidang" name="bidang" value=" {{ Auth::user()->bidang }}">
-                        <input type="hidden" id="tanggal_selesai" name="tanggal_selesai" value="">
-                        <br>
 
                         <div class="col text-center">
                             <button type="submit" class="btn blue center" id="saveBtn" value="create">Simpan</button>
@@ -221,23 +234,27 @@
         $('body').on('click', '.detailProduct', function() {
             document.getElementById('title').readOnly = true;
             document.getElementById('content').readOnly = true;
-            document.getElementById('progress').disabled = true;
+            document.getElementById('target').disabled = true;
+            document.getElementById('realisasi').disabled = true;
             document.getElementById('status').disabled = true;
-            document.getElementById('target_selesai').readOnly = false;
+            document.getElementById('kpi').disabled = true;
+            document.getElementById('target_selesai').readOnly = true;
             document.getElementById('saveBtn').style.visibility = 'hidden';
             var id = $(this).data('id');
             $.get("{{ route('home.index') }}" + '/' + id + '/edit', function(data) {
-                $('#modelHeading').html("Edit Task");
+                $('#modelHeading').html("Detail Task");
                 $('#saveBtn').val("edit-user");
                 $('#ajaxModel').modal('show');
                 $('#id').val(data.id);
                 $('#title').val(data.title);
                 $('#content').val(data.content);
-                $('#progress').val(data.progress);
-                $('#progressVal').val(data.progress);
+                $('#kpi').val(data.kpi);
+                $('#realisasi').val(data.realisasi);
+                $('#target').val(data.target);
+                $('#progressVal').val(data.realisasi);
+                $('#progressVal2').val(data.target);
                 $('#status').val(data.status);
                 $('#target_selesai').val(data.target_selesai);
-
             })
         });
     });

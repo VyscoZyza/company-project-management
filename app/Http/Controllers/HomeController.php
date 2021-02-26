@@ -32,25 +32,6 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         // $task = Post::where('user_id', Auth::id())->latest()->get();
-        if ($request->ajax()) {
-            $data = Post::where('user_id', Auth::user()->uid)->latest()->get();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    $this->actionButton($row->id);
-                })->addColumn('target_selesai', function ($row) {
-                    $date = date("d M Y", strtotime($row->target_selesai));
-                    return $date;
-                })
-                ->addColumn('progress', function ($row) {
-                    $this->progressBar($row->progress, $row->status);
-                })->addColumn('status', function ($row) {
-                    $pro = $row->progress;
-                    $this->statusBar($row->progress, $row->status);
-                })
-                ->rawColumns(['action', 'progress', 'status'])
-                ->make(true);
-        }
 
         return view('Home');
     }

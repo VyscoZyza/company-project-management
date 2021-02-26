@@ -60,6 +60,7 @@
             <tr>
                 <th scope="col " style="width: 1%" class="text-center">No</th>
                 <th scope="col" style="width: 40%;">Nama</t>
+                <th scope="col">Personal Number</t>
                 <th scope="col" class="text-center" style="width: 20%;">Jabatan</t>
 
             </tr>
@@ -87,7 +88,7 @@
             autoWidth: false,
             responsive: true,
             columnDefs: [{
-                    "targets": [0, 2], // your case first column
+                    "targets": [0, 2, 3], // your case first column
                     "className": "text-center",
 
                 },
@@ -121,6 +122,10 @@
                 {
                     data: 'name',
                     name: 'name'
+                },
+                {
+                    data: 'uid',
+                    name: 'uid'
                 },
                 {
                     data: 'jabatan',

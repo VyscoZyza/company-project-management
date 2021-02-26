@@ -212,7 +212,7 @@
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-pie"></i>
-                                <p>
+                                <p class="text-white">
                                     Task
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
@@ -261,26 +261,26 @@
                                 </p>
                             </a>
                             @elseif(Auth::user()->level == 03)
-                            <a href="{{ route('staff') }}" class="nav-link">
+                            <!-- <a href="{{ route('staff') }}" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
                                 <p class="text-white">
                                     Lihat Staff
 
                                 </p>
-                            </a>
+                            </a> -->
                             @elseif(Auth::user()->level == 02)
-                            <a href="{{ route('staff') }}" class="nav-link">
+                            <!-- <a href="{{ route('staff') }}" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
                                 <p class="text-white">
                                     Lihat Staff
 
                                 </p>
-                            </a>
+                            </a> -->
                             @elseif(Auth::user()->level == 01)
 
                             @endif
                         </li>
-                        <li class="nav-item font-sidebar">
+                        <!-- <li class="nav-item font-sidebar">
                             @if (Auth::user()->level == 04)
 
                             @elseif(Auth::user()->level == 03)
@@ -301,7 +301,7 @@
                             </a>
 
                             @endif
-                        </li>
+                        </li> -->
                         <li class="nav-item font-sidebar">
                             @if (Auth::user()->level == 02)
                             <a href="{{ route('list') }}" class="nav-link">

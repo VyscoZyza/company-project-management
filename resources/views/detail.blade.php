@@ -53,12 +53,25 @@
     }
 </style>
 
+@foreach ($user as $u)
+<h3>{{ $u->name }}</h3>
+<h6>&nbsp;{{ $u->jabatan }}</h6>
+@endforeach
+<div class="col-md-12 text-right mb-1">
+    <a class="btn blue text-white" href="javascript:history.back()" id=" createNewProduct"> Kembali</a>
 
-<h3>Detail Task Pengguna</h3>
-<div class="col-md-12 text-right mb-5">
 
 </div>
+</div>
 <div class="col-md-12">
+    <div class="form-group">
+        <label><strong>KPI :</strong></label>
+        <select id='filter-kpi' class="form-control" style="width: 200px" data-column="5">
+            <option value="">Semua</option>
+            <option value="1">KPI</option>
+            <option value="0">Non-KPI</option>
+        </select>
+    </div>
     <table class="table table-hover data-table">
         <thead class="table-white">
             <tr>
@@ -163,9 +176,14 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
     $(function() {
-        var user_id = $(this).data('user_id');
+
+        var initial_url = window.location.href;
+        var url = initial_url.split('/');
+        var user_id = url[url.length - 1];
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -211,7 +229,15 @@
             },
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.task') }}",
+            ajax: {
+                url: "/detail/" + user_id,
+                data: function(d) {
+                    d.kpi = $('#filter-kpi').val(),
+                        d.search = $('input[type="search"]').val()
+                }
+            },
+            // ajax: "/detail/" + user_id,
+            // route("detail.user", $row - > user_id)
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -318,7 +344,9 @@
                 return false;
             }
         });
-
+        $('#filter-kpi').change(function() {
+            table.draw();
+        });
     });
 </script>
 

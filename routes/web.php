@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/my-task', [PageController::class, 'MyTask'])->name('my.task');
     Route::get('/team-task', [PageController::class, 'TeamTask'])->name('team.task');
     Route::get('/detail/{user_id}', [PageController::class, 'DetailUser'])->name('detail.user');
+    Route::get('/company-task/{bagian}', [PageController::class, 'DivisionTask'])->name('detail.bagian');
+    // Route::post('/detail', [PageController::class, 'OtherTask'])->name('detail');
     Route::get('/dttbl', [PageController::class, 'UserTask'])->name('user.task');
     Route::get('/company-task', [PageController::class, 'CompanyTask'])->name('company.task');
     // Route::get('/', [PageController::class, 'TeamTask'])->name('team.task');

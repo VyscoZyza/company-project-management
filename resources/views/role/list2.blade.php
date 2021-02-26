@@ -54,21 +54,22 @@
     }
 </style>
 
-<div class="col-sm-8" style="width: 100%">
-    <table class="table table-hover data-table">
-        <thead class="table-white">
-            <tr>
-                <th scope="col " style="width: 1%" class="text-center">No</th>
-                <th scope="col" style="width: 40%;">Nama</t>
-                <th scope="col" style="width: 20%;">Bagian</t>
-                <th scope="col" class="text-center" style="width: 20%;">Jabatan</t>
 
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</div>
+<table class="table table-hover data-table">
+    <thead class="table-white">
+        <tr>
+            <th scope="col " style="width: 1%" class="text-center">No</th>
+            <th scope="col" style="width: 40%;">Nama</t>
+            <th scope="col">Personal Number</t>
+            <th scope="col" style="width: 20%;">Bagian</t>
+            <th scope="col" class="text-center" style="width: 20%;">Jabatan</t>
+
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
 
 
 
@@ -88,7 +89,7 @@
             autoWidth: false,
             responsive: true,
             columnDefs: [{
-                    "targets": [0, 2, 3], // your case first column
+                    "targets": [0, 2, 3, 4], // your case first column
                     "className": "text-center",
 
                 },
@@ -122,6 +123,10 @@
                 {
                     data: 'name',
                     name: 'name'
+                },
+                {
+                    data: 'uid',
+                    name: 'uid'
                 },
                 {
                     data: 'bagian',

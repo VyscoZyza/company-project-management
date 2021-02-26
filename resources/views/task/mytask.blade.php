@@ -55,25 +55,20 @@
 
 
 <h3>Task Saya</h3>
-<div class="col-md-12 text-right mb-5">
+<div class="col-md-12 text-right mb-1">
     <a class="btn blue text-white" href="javascript:void(0)" id="createNewProduct"> Buat Task Baru</a>
 
 
 </div>
-<div class="row" style="margin-top: 50px;">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>Tampilkan</label>
-                    <select class="form-control fkpi" id="kpi" name="kpi">
-                        <option value="">Semua</option>
-                        <option value="Ya">KPI</option>
-                        <option value="Tidak">Non-KPI</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+<div class="row" style="margin-top: 5px;">
+
+    <div class="form-group">
+        <label><strong>KPI :</strong></label>
+        <select id='filter-kpi' class="form-control" style="width: 200px" data-column="5">
+            <option value="">Semua</option>
+            <option value="1">KPI</option>
+            <option value="0">Non-KPI</option>
+        </select>
     </div>
     <div class="col-md-12">
         <table class="table table-hover data-table">
@@ -234,7 +229,13 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('my.task') }}",
+                ajax: {
+                    url: "{{ route('my.task') }}",
+                    data: function(d) {
+                        d.kpi = $('#filter-kpi').val(),
+                            d.search = $('input[type="search"]').val()
+                    }
+                },
 
                 columns: [{
                         data: 'DT_RowIndex',
@@ -325,6 +326,7 @@
                 document.getElementById('target').disabled = true;
                 document.getElementById('realisasi').disabled = true;
                 document.getElementById('status').disabled = true;
+                document.getElementById('kpi').disabled = true;
                 document.getElementById('target_selesai').readOnly = true;
                 document.getElementById('saveBtn').style.visibility = 'hidden';
                 var id = $(this).data('id');
@@ -384,10 +386,15 @@
                     return false;
                 }
             });
-            $('#kpi').change(function() {
+
+            // $('#filter-kpi').change(function() {
+            //     table.column($(this).data('column'))
+            //         .search($(this).val())
+            //         .draw();
+            // });
+            $('#filter-kpi').change(function() {
                 table.draw();
             });
-
         });
     </script>
 
