@@ -178,7 +178,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: linear-gradient(rgba(41, 47, 76, 1), rgba(41, 47, 76, 1)),  url('/dist/img/img1.jpg') !important; background-position:  center !important; background-repeat: no-repeat !important; background-size: cover !important; color: white !important; ">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
+            <a href="#" class="brand-link">
                 <img src="{{asset('img/Side-Logo.png')}}" alt="Logo" class="brand-image" style="display: block; margin-left: auto!important; margin-right: auto!important; width: 95%; max-height: 70px;">
                 <br> <br>
                 {{-- <span class="brand-text font-weight-light">Bank Rakyat Indonesia</span> --}}
@@ -189,7 +189,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="https://gitlabcommitvirtual.com/wp-content/uploads/2020/06/person-dummy-e1553259379744.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="{{asset('img/dummy.jpg')}}" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block"> {{ Auth::user()->name }}</a>
@@ -280,28 +280,7 @@
 
                             @endif
                         </li>
-                        <!-- <li class="nav-item font-sidebar">
-                            @if (Auth::user()->level == 04)
 
-                            @elseif(Auth::user()->level == 03)
-                            <a href="{{ route('supervisor') }}" class="nav-link">
-                                <i class="nav-icon fas fa-user"></i>
-                                <p class="text-white">
-                                    Lihat Supervisor
-
-                                </p>
-                            </a>
-                            @elseif(Auth::user()->level == 02)
-                            <a href="{{ route('supervisor') }}" class="nav-link">
-                                <i class="nav-icon fas fa-user"></i>
-                                <p class="text-white">
-                                    Lihat Supervisor
-
-                                </p>
-                            </a>
-
-                            @endif
-                        </li> -->
                         <li class="nav-item font-sidebar">
                             @if (Auth::user()->level == 02)
                             <a href="{{ route('list') }}" class="nav-link">

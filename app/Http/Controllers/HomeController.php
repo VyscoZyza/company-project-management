@@ -31,7 +31,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        // $task = Post::where('user_id', Auth::id())->latest()->get();
+
 
         return view('Home');
     }
@@ -45,38 +45,40 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
-        $todayDate = Carbon::now();
-        $pre = (((int)$request->realisasi / (int)$request->target)) * 100;
-        $pro = round($pre, 0);
-        if ($pro == 100) {
-            $val = 'Selesai';
-            $selesai = $todayDate;
-        } else {
-            $val = $request->status;
-            $selesai = $request->tanggal_selesai;
-        }
-        Post::updateOrCreate(
-            ['id' => $request->id],
-            [
-                'user_id' => $request->user_id,
-                'title' => $request->title,
-                'content' => $request->content,
-                'kpi' => $request->kpi,
-                'realisasi' => $request->realisasi,
-                'target' => $request->target,
-                'status' => $val,
-                'target_selesai' => $request->target_selesai,
-                'user_id' => $request->user_id,
-                'name' => $request->name,
-                'jabatan' => $request->jabatan,
-                'supervisi' => $request->supervisi,
-                'bagian' => $request->bagian,
-                'bidang' => $request->bidang,
-                'tanggal_selesai' => $selesai,
-            ]
-        );
+        if ($request->target >= $request->realisasi) {
+            $todayDate = Carbon::now();
+            $pre = (((int)$request->realisasi / (int)$request->target)) * 100;
+            $pro = round($pre, 0);
+            if ($pro == 100) {
+                $val = 'Selesai';
+                $selesai = $todayDate;
+            } else {
+                $val = $request->status;
+                $selesai = $request->tanggal_selesai;
+            }
+            Post::updateOrCreate(
+                ['id' => $request->id],
+                [
+                    'user_id' => $request->user_id,
+                    'title' => $request->title,
+                    'content' => $request->content,
+                    'kpi' => $request->kpi,
+                    'realisasi' => $request->realisasi,
+                    'target' => $request->target,
+                    'status' => $val,
+                    'target_selesai' => $request->target_selesai,
+                    'user_id' => $request->user_id,
+                    'name' => $request->name,
+                    'jabatan' => $request->jabatan,
+                    'supervisi' => $request->supervisi,
+                    'bagian' => $request->bagian,
+                    'bidang' => $request->bidang,
+                    'tanggal_selesai' => $selesai,
+                ]
+            );
 
-        return response()->json(['success' => 'Berhasil disimpan.']);
+            return response()->json(['success' => 'Berhasil disimpan.']);
+        }
     }
     /**
      * Show the form for editing the specified resource.

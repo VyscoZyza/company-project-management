@@ -149,8 +149,8 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: linear-gradient(rgba(41, 47, 76, 1), rgba(41, 47, 76, 1)),  url('/dist/img/img1.jpg') !important; background-position:  center !important; background-repeat: no-repeat !important; background-size: cover !important; color: white !important; ">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
-                <img src="https://logos-download.com/wp-content/uploads/2016/06/Bank_BRI_logo_blue_background.png" alt="Havara Logo" class="brand-image" style="display: block; margin-left: auto!important; margin-right: auto!important; width: 95%; max-height: 70px;">
+            <a href="#" class="brand-link">
+                <img src="{{asset('img/Side-Logo.png')}}" alt="Logo" class="brand-image" style="display: block; margin-left: auto!important; margin-right: auto!important; width: 95%; max-height: 70px;">
                 <br> <br>
                 {{-- <span class="brand-text font-weight-light">Bank Rakyat Indonesia</span> --}}
             </a>
@@ -160,7 +160,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="https://gitlabcommitvirtual.com/wp-content/uploads/2020/06/person-dummy-e1553259379744.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="{{asset('img/dummy.jpg')}}" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block"> {{ Auth::user()->name }}</a>
@@ -173,7 +173,7 @@
                         <!-- Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library -->
                         <li class="nav-item font-sidebar">
-                            <a href="{{ route('admin') }}" class="nav-link">
+                            <a href="{{ route('admin.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
                                 <p class="text-white">
                                     Dashboard

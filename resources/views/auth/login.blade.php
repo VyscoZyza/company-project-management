@@ -101,6 +101,11 @@
             </div>
         </div>
         <div class="row">
+            <div class="input-field col s12">
+
+                <input id="captcha" type="text" class="form-control " required name="captcha">
+                <label for="captcha">Captcha</label>
+            </div>
             <div class="form-group mt-2 mb-2 text-center">
                 <div class="captcha">
                     <span>{!! captcha_img() !!}</span>
@@ -109,11 +114,7 @@
                     </button>
                 </div>
             </div>
-            <div class="input-field col s12">
 
-                <input id="captcha" type="text" class="form-control " required name="captcha">
-                <label for="captcha">Captcha</label>
-            </div>
         </div>
         <div class="row">
 

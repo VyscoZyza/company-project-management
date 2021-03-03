@@ -20,15 +20,15 @@ class CreatePostsTable extends Migration
             $table->string('user_id', 10);
             $table->string('name', 100);
             $table->string('jabatan', 100);
-            $table->string('supervisi', 100);
-            $table->string('bagian', 100);
-            $table->string('bidang', 100);
+            $table->string('supervisi', 100)->nullable();
+            $table->string('bagian', 100)->nullable();
+            $table->string('bidang', 100)->nullable();
             $table->string('target', 3);
             $table->string('realisasi', 3);
             $table->string('status', 25);
             $table->string('kpi', 2);
             $table->date('target_selesai');
-            $table->timestamp('tanggal_selesai');
+            $table->timestamp('tanggal_selesai')->nullable();
             $table->timestamps();
         });
     }

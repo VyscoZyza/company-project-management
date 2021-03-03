@@ -55,6 +55,29 @@
 
 
 <h3>Task Saya</h3>
+
+@if(Session::has('error'))
+<div class="alert alert-danger alert-dismissible fade show">
+    {{ Session::get('error')}} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endif
+@if ($errors->any())
+<div class="alert alert-danger alert-dismissible fade show">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div><br />
+@endif
+
+
+
 <div class="col-md-12 text-right mb-1">
     <a class="btn blue text-white" href="javascript:void(0)" id="createNewProduct"> Buat Task Baru</a>
 
@@ -102,21 +125,21 @@
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Judul</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="title" name="title" placeholder="Judul" value="" maxlength="50" required="">
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Judul" value="" maxlength="50" required="" style="background-color: #fff !important;">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Deskripsi</label>
                             <div class="col-sm-12">
-                                <textarea id="content" name="content" required="" placeholder="Deskripsi" class="form-control"></textarea>
+                                <textarea id="content" name="content" required="" placeholder="Deskripsi" class="form-control" style="background-color: #fff !important;"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">KPI</label>
                             <div class="col-sm-12">
                                 <div class="btn-group dropright">
-                                    <select class="form-control" id="kpi" name="kpi">
+                                    <select class="form-control" id="kpi" name="kpi" style="background-color: #fff !important;">
                                         <option value="1">Ya</option>
                                         <option value="0">Tidak</option>
 
@@ -144,7 +167,7 @@
                             <label class="col-sm-2 control-label">Status</label>
                             <div class="col-sm-12">
                                 <div class="btn-group dropright">
-                                    <select class="form-control" id="status" name="status">
+                                    <select class="form-control" id="status" name="status" style="background-color: #fff !important;">
                                         <option value="Direncanakan">Direncanakan</option>
                                         <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
                                         <option value="Ditunda">Ditunda</option>
@@ -236,7 +259,7 @@
                             d.search = $('input[type="search"]').val()
                     }
                 },
-
+                // a
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -387,11 +410,7 @@
                 }
             });
 
-            // $('#filter-kpi').change(function() {
-            //     table.column($(this).data('column'))
-            //         .search($(this).val())
-            //         .draw();
-            // });
+
             $('#filter-kpi').change(function() {
                 table.draw();
             });

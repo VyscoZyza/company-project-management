@@ -23,21 +23,20 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-
-
-// Route::resource('posts', App\Http\Controllers\PostController::class);
-Auth::routes();
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false,
+]);
 Route::resource('admin', AdminController::class);
 Route::resource('home', HomeController::class);
-// Route::resource('detail', DetailController::class);
-// Route::match(['resource', 'post'], 'detail', DetailController::class);
 
 Route::group(['middleware' => 'auth'], function () {
-    // Route::get('/detail/{user_id}', [PageController::class, 'Detail'])->name('detail');
+
     Route::get('/team', [PageController::class, 'Team'])->name('team');
-    Route::get('/staff', [PageController::class, 'Staff'])->name('staff');
-    Route::get('/supervisor', [PageController::class, 'Supervisor'])->name('supervisor');
-    Route::get('/kabag', [PageController::class, 'Kabag'])->name('kabag');
+    // Route::get('/staff', [PageController::class, 'Staff'])->name('staff');
+    // Route::get('/supervisor', [PageController::class, 'Supervisor'])->name('supervisor');
+    // Route::get('/kabag', [PageController::class, 'Kabag'])->name('kabag');
     Route::get('/staff-list', [PageController::class, 'List'])->name('list');
     Route::get('/emp-list', [PageController::class, 'List2'])->name('list2');
     Route::get('/history', [PageController::class, 'History'])->name('history');
@@ -46,29 +45,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/my-task', [PageController::class, 'MyTask'])->name('my.task');
     Route::get('/team-task', [PageController::class, 'TeamTask'])->name('team.task');
     Route::get('/detail/{user_id}', [PageController::class, 'DetailUser'])->name('detail.user');
-    Route::get('/company-task/{bagian}', [PageController::class, 'DivisionTask'])->name('detail.bagian');
-    // Route::post('/detail', [PageController::class, 'OtherTask'])->name('detail');
-    Route::get('/dttbl', [PageController::class, 'UserTask'])->name('user.task');
     Route::get('/company-task', [PageController::class, 'CompanyTask'])->name('company.task');
-    // Route::get('/', [PageController::class, 'TeamTask'])->name('team.task');
+    Route::get('/company-task/{bagian}', [PageController::class, 'DivisionTask'])->name('detail.bagian');
 });
 
 Route::get('/contact-form', [CaptchaServiceController::class, 'index']);
 Route::post('/captcha-validation', [CaptchaServiceController::class, 'capthcaFormValidate']);
 Route::get('/reload-captcha', [CaptchaServiceController::class, 'reloadCaptcha']);
-// Route::get('spv/home', [App\Http\Controllers\HomeController::class, 'spvHome'])->name('spv.home')->middleware('jabatan');
-// Route::get('staff/home', [App\Http\Controllers\HomeController::class, 'staffHome'])->name('staff.home')->middleware('jabatan');
-// Route::get('kabag/home', [App\Http\Controllers\HomeController::class, 'kabagHome'])->name('kabag.home')->middleware('jabatan');
-// Route::get('vp/home', [App\Http\Controllers\HomeController::class, 'vpHome'])->name('vp.home')->middleware('jabatan');
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('home')->middleware('jabatan');
-// Route::get('task/create', [App\Http\Controllers\PostController::class, 'create']);
-// Route::get('/staff/team', [App\Http\Controllers\HomeController::class, 'indexTeam']);
-// Route::get('/spv/staff', [App\Http\Controllers\HomeController::class, 'indexStaff']);
-// Route::get('/spv/supervisor', [App\Http\Controllers\HomeController::class, 'indexSupervisor']);
-// Route::get('/kabag/staff', [App\Http\Controllers\HomeController::class, 'indexStaff']);
-// Route::get('/kabag/supervisor', [App\Http\Controllers\HomeController::class, 'indexSupervisor']);
-// Route::get('/vp/kabag', [App\Http\Controllers\HomeController::class, 'indexKabag']);
-// // Route::post('/store', [App\Http\Controllers\PostController::class, 'store']);
-// Route::post('/store', [App\Http\Controllers\HomeController::class, 'store'])->name('posts.store');
-// Route::get('/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('posts.edit');
-// Route::post('/delete', [App\Http\Controllers\HomeController::class, 'delete'])->name('posts.delete');

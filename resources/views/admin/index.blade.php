@@ -209,12 +209,9 @@
 
         var table = $('.data-table').DataTable({
             columnDefs: [{
-                    "targets": [0, 2, 3, 4, 5, 6], // your case first column
-                    "className": "text-center",
-
-                },
-
-            ],
+                "targets": [0, 2, 3, 4, 5, 6], // your case first column
+                "className": "text-center",
+            }, ],
             language: {
                 paginate: {
                     next: '<span class="fas fa-arrow-right"></span>', // or '→'
