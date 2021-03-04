@@ -239,7 +239,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "/detail/" + user_id,
+                    url: "/project-management-main/public/detail/" + user_id,
                     data: function(d) {
                         d.kpi = $('#filter-kpi').val(),
                             d.search = $('input[type="search"]').val()

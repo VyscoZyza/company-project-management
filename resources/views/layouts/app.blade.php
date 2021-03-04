@@ -202,6 +202,7 @@
                         <!-- Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library -->
                         <li class="nav-item font-sidebar">
+                            <!-- <a href="{{ route('home.index') }}" class="nav-link"> -->
                             <a href="{{ route('home.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
                                 <p class="text-white">
@@ -398,6 +399,7 @@
     <script src="{{ asset('lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('lte/dist/js/adminlte.js') }}"></script>
+
 </body>
 
 </html>

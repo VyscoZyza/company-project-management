@@ -115,6 +115,7 @@
 
     <div class="modal fade" id="ajaxModel" aria-hidden="true">
         <div class="modal-dialog">
+
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modelHeading"></h4>
@@ -200,6 +201,15 @@
                             </div>
 
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="alert" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-body">
+                <div class="alert alert-danger bubble fade show">
+                    Terjadi Kesahalan, Silahkan periksa kembali
                 </div>
             </div>
         </div>
@@ -382,11 +392,13 @@
                     success: function(data) {
                         $('#productForm').trigger("reset");
                         $('#ajaxModel').modal('hide');
+                        $('#alert').modal('hide');
                         table.draw();
                     },
                     error: function(data) {
                         console.log('Error:', data);
                         $('#saveBtn').html('Simpan');
+                        $('#alert').modal('show');
                     }
                 });
             });

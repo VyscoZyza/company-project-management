@@ -94,7 +94,7 @@ class AdminController extends Controller
             );
             return response()->json(['success' => 'Berhasil disimpan.']);
         } else {
-            return Redirect::back()->with('error', 'Operation Successful !');
+            return Redirect::back()->with('alert', 'Operation Successful !');
         }
     }
     /**
